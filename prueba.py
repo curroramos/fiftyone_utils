@@ -27,3 +27,5 @@ dataset = fo.Dataset.from_dir(
 view = dataset.shuffle()
 
 session = fo.launch_app(view)
+
+session.wait()
