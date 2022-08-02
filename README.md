@@ -1,6 +1,6 @@
 # fiftyone_utils
 
-This repo contains sample files that can be used to manipulate and visualize image datasets.
+This repo contains sample files that can be used to manipulate and visualize Object Detection image datasets.
 
 You can find fiftyone documentation [here](https://voxel51.com/docs/fiftyone/ "Fiftyone documentation").
 
@@ -179,4 +179,17 @@ dataset_classes = ["airplane"]
 train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'train', classes = dataset_classes)
 valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'val', classes = dataset_classes)
 test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'test', classes = dataset_classes)
+```
+
+# 5.3 Export dataset for Image Classification task
+For Image Classification tasks we need the dataset to be distributed in a directory tree in which different classes are separed. Supposing we want to classify if there is an object present or not (regardless of their position), we use the following code.
+
+```
+# First folder (no objects in images)
+EXPORT_DIR = "/home/curro/datasets/crack_dataset/image_classification/evaluation/normal"
+non_labeled_view.export(export_dir=EXPORT_DIR, dataset_type=fo.types.ImageDirectory())
+
+# Second folder (present objects in images)
+EXPORT_DIR = "/home/curro/datasets/crack_dataset/image_classification/evaluation/fissure"
+labeled_selected_view.export(export_dir=EXPORT_DIR, dataset_type=fo.types.ImageDirectory())
 ```
