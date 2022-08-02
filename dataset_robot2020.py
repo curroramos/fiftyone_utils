@@ -103,3 +103,10 @@ EXPORT_DIR = "/home/curro/dataset_catec/robot_2020_v2/yolov5"
 train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'train', classes = ["airplane"])
 valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'val', classes = ["airplane"])
 test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'test', classes = ["airplane"])
+
+#%% Export to COCO
+EXPORT_DIR = "/home/curro/dataset_catec/robot_2020_v2/coco/"
+
+train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="train.json", classes = ["airplane"], export_media=False)
+valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="validation.json" , classes = ["airplane"], export_media=False)
+test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="test.json", classes = ["airplane"], export_media=False)

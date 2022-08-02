@@ -61,10 +61,122 @@ Other option is to use the repo: https://github.com/Taeyoung96/Yolo-to-COCO-form
 Follow these steps:
 1. Install the repo
 2. Make sure to have only one folder including the images with their respective labels (the differences in their name is the extension jpg-txt, png-txt, etc-txt)
-3. Run the following command:
+3. Modify `main.py` with the correct class names, e.g.
+```
+classes = [
+    "airplane",
+    # "handle",
+    # "table",
+    # "button",
+    # "person",
+]
+
+```
+4. Run the following command:
 ```
 python3 main.py -p $FOLDER_PATH$ --output $OUTPUT_FILENAME$.json
 ```
 
-## 2. 
+## 2. Create a new dataset from different datasets
+1. Load the datasets
+2. Create the new dataset
+```
+dataset = fo.Dataset()
+```
+3. Take the desired number of samples from each dataset
+```
+num_samples = 4000
 
+# Take samples
+oran_view = dataset_oran.take(num_samples)
+beas_view = dataset_beas.take(num_samples)
+ilipa_view = dataset_ilipa.take(num_samples)
+```
+
+4. Add the selected samples to the new dataset
+```
+# Add samples
+dataset.add_samples(oran_view)
+dataset.add_samples(beas_view)
+dataset.add_samples(ilipa_view)
+```
+
+
+## 3. Filter labelled and unlabelled data
+(When we talk about unlabelled data, we refer to images where no target objects are present)
+
+Steps:
+1. Obtain labelled data
+```
+from fiftyone import ViewField as F
+
+class_name = "airplane" # Wanted class
+
+labeled_view = dataset.filter_labels("labels_detections",(F("label") == class_name) )
+```
+
+2. Exclude labelled data from whole dataset to obtain unlabelled data
+```
+non_labeled_view  = dataset.exclude(labeled_view)
+```
+
+3. Use these 2 different distributions to create a new balanced dataset
+```
+# Create new dataset
+dataset = fo.Dataset()
+
+# Take the same number of labelled and unlabelled samples
+labeled_reduced_view = labeled_view.take(len(non_labeled_view))
+
+# Add samples to the new dataset 
+dataset.add_samples(labeled_reduced_view)
+dataset.add_samples(non_labeled_view)
+```
+## 4. Create train, validation and test sets
+To create train, validation and test sets we take the desired percentage of images from the desired distributions (scenarios). 
+- train-val => 70%-30% from same distribution
+- test => length==val using images comming from a different distribution (different scenarios) to make sure our model has been able to generalize.
+For example:
+```
+# Train set
+oran_view = dataset_oran.take(3500)
+aerohispalis_view = dataset_aerohispalis.take(3500)
+ 
+train = fo.Dataset()
+train.add_samples(oran_view)
+train.add_samples(aerohispalis_view)
+
+# Validation set
+atlas_view = dataset_atlas.take(1000)
+
+valid = fo.Dataset()
+valid.add_samples(atlas_view)
+
+# Test set
+test = fo.Dataset()
+test.add_samples(dataset_beas)
+test.add_samples(dataset_ilipa)
+```
+
+## 5. Export new dataset to different formats
+Once we have manipulated and created our new dataset, we can export it into different formats
+# 5.1 Export to COCO
+Export resulting `.json` files (If you also want to export the images files change `export_media=True`)
+```
+EXPORT_DIR = "<root-out-dataset-dir>"
+dataset_classes = ["airplane"]
+
+train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="train.json", classes = dataset_classes, export_media=False)
+valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="validation.json" , classes = dataset_classes, export_media=False)
+test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="test.json", classes = dataset_classes, export_media=False)
+```
+
+# 5.2 Export to YOLO
+```
+EXPORT_DIR = "<root-out-dataset-dir>"
+dataset_classes = ["airplane"]
+
+train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'train', classes = dataset_classes)
+valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'val', classes = dataset_classes)
+test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'test', classes = dataset_classes)
+```
