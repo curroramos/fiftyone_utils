@@ -12,7 +12,7 @@ The operations explained in this repo include the following:
 
 
 ## 0. Imports
-To use fiftyone library, just import the following in a python script:
+To use fiftyone library, just import the following module in a python script:
 ```
 import fiftyone as fo
 ```
@@ -160,7 +160,7 @@ test.add_samples(dataset_ilipa)
 
 ## 5. Export new dataset to different formats
 Once we have manipulated and created our new dataset, we can export it into different formats
-# 5.1 Export to COCO
+### 5.1 Export to COCO
 Export resulting `.json` files (If you also want to export the images files change `export_media=True`)
 ```
 EXPORT_DIR = "<root-out-dataset-dir>"
@@ -171,7 +171,7 @@ valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, 
 test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="test.json", classes = dataset_classes, export_media=False)
 ```
 
-# 5.2 Export to YOLO
+### 5.2 Export to YOLO
 ```
 EXPORT_DIR = "<root-out-dataset-dir>"
 dataset_classes = ["airplane"]
@@ -181,7 +181,7 @@ valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split
 test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'test', classes = dataset_classes)
 ```
 
-# 5.3 Export dataset for Image Classification task
+### 5.3 Export dataset for Image Classification task
 For Image Classification tasks we need the dataset to be distributed in a directory tree in which different classes are separed. Supposing we want to classify if there is an object present or not (regardless of their position), we use the following code.
 
 ```
