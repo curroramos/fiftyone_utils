@@ -1,17 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Tue Jun 14 12:59:34 2022
-
-@author: curro
+Sample file 
 """
 
-import os
 import fiftyone as fo
-import fiftyone.zoo as foz
 
-
-#%% oran dataset
+# Oran dataset
 json_path = "/home/curro/mmdetection/data/coco_data/train.json"
 images_dir = "/home/curro/mmdetection/data/coco_data/coco_train"
 
@@ -24,8 +17,11 @@ dataset = fo.Dataset.from_dir(
     label_field="labels",
 )
 
+# Create a view with the dataset shuffled
 view = dataset.shuffle()
 
+# Open a new session
 session = fo.launch_app(view)
 
+# Wait till the session is closed
 session.wait()

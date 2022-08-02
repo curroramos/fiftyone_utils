@@ -2,26 +2,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr  6 08:53:13 2022
-
-@author: curro
+Other sample file
 """
 
 # Use of fiftyone to build a dataset from different dataset folders
-
-import os
 import fiftyone as fo
-import fiftyone.zoo as foz
 
-#%% Load COCO dataset
-# Load COCO formatted dataset
-# yolo_dataset = fo.Dataset.from_dir(
-#     dataset_type=fo.types.YOLOv5Dataset(),
-#     dataset_dir="/home/curro/dataset_catec/aeroHispalisALL",
-#     yaml_path = "/home/curro/dataset_catec/dataset.yaml",
-#     include_id=True,
-#     label_field="labels",
-# )
 
 #%% 20210205 dataset
 json_path = "/home/curro/dataset_catec/json_datasets/no_etiquetados.json"
@@ -147,15 +133,7 @@ train_view.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), 
 test_view.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'val', classes = ["airplane"])
 
 
-#%% 5 imagenes pablo
-train_view_pablo = dataset.take(5)
-
-EXPORT_DIR = "/home/curro/dataset_catec/prueba"
-train_view_pablo.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset(), split = 'train', classes = ["airplane"])
-
-
-
-#%% File with dataset characteristics
+#%% OPTIONAL: File with dataset characteristics
 import csv
 csv_file =  open("dataset_info.csv", 'w')
 csv_writer = csv.writer(csv_file, delimiter= '\n')
@@ -182,7 +160,6 @@ csv_writer.writerow(['----------'])
 csv_writer.writerow(['Split train and valid:'])
 csv_writer.writerow(['Train images:' + str(len(train_view))])
 csv_writer.writerow(['Valid images:' + str(len(test_view))])
-
 
 
 csv_file.close()

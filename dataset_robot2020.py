@@ -1,16 +1,8 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Wed Jun 15 09:04:50 2022
-
-@author: curro
+Sample file used to build a dataset from different datasets
 """
 
-# Use of fiftyone to build a dataset from different dataset folders
-
-import os
 import fiftyone as fo
-import fiftyone.zoo as foz
 
 #%% aeroHispalis dataset
 json_path = "/home/curro/dataset_catec/json_datasets/aerohispalis.json"
@@ -64,7 +56,6 @@ dataset_ilipa = fo.Dataset.from_dir(
     label_field="labels",
 )
 
-
 #%% oran dataset
 json_path = "/home/curro/dataset_catec/json_datasets/oran.json"
 images_dir = "/home/curro/dataset_catec/oran"
@@ -78,13 +69,11 @@ dataset_oran = fo.Dataset.from_dir(
     label_field="labels",
 )
 
-
-
 #%% TRAIN
 oran_view = dataset_oran.take(3500)
 aerohispalis_view = dataset_aerohispalis.take(3500)
 
-#create train
+# Create train
 train = fo.Dataset()
 train.add_samples(oran_view)
 train.add_samples(aerohispalis_view)
@@ -92,33 +81,25 @@ train.add_samples(aerohispalis_view)
 #%% VAL
 atlas_view = dataset_atlas.take(1000)
 
-#create valid
+# Create valid
 valid = fo.Dataset()
 valid.add_samples(atlas_view)
 
 #%% TEST
-#create test
+# Create test
 test = fo.Dataset()
 test.add_samples(dataset_beas)
 test.add_samples(dataset_ilipa)
 
-#%%
-session = fo.launch_app(train)
+#%% Open a new fiftyone session. Visualize: train,valid,test
+session = fo.launch_app(train) 
 
+# Wait till the session is closed
+session.wait()
 
-#%% Export to yolo
+#%% Export to YOLO
 EXPORT_DIR = "/home/curro/dataset_catec/robot_2020_v2/yolov5"
+
 train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'train', classes = ["airplane"])
 valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'val', classes = ["airplane"])
 test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.YOLOv5Dataset(), split = 'test', classes = ["airplane"])
-
-
-#%% Export to coco
-EXPORT_DIR = "/home/curro/dataset_catec/robot_2020_v2/coco/"
-#%%
-train.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset(), labels_path="train.json", classes = ["airplane"], export_media=False)
-#%%
-valid.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="validation.json" , classes = ["airplane"], export_media=False)
-#%%
-test.export(export_dir=EXPORT_DIR, dataset_type=fo.types.COCODetectionDataset, labels_path="test.json", classes = ["airplane"], export_media=False)
-

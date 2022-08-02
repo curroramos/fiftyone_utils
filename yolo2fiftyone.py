@@ -1,21 +1,23 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Thu Mar 17 12:11:43 2022
-
-@author: curro
+Sample file to load a YOLO formatted dataset
 """
-
 
 import fiftyone as fo
 
+dataset_dir = "<data path>"
+yaml_path = "<path-to-dataset.yml>"
+
 # Load YOLO formatted dataset
-coco_dataset = fo.Dataset.from_dir(
+yolo_dataset = fo.Dataset.from_dir(
     dataset_type=fo.types.YOLOv5Dataset(),
-    dataset_dir="/home/curro/dataset_catec/crack_detection_dataset/",
-    #yaml_path = "/home/curro/yolo_vigia/runs/coco2yolov5/exp/dataset.yml",
+    dataset_dir=dataset_dir,
+    yaml_path = yaml_path,
     include_id=True,
     label_field="",
 )
-session = fo.launch_app(coco_dataset)
 
+# Open a new session
+session = fo.launch_app(yolo_dataset)
+
+# wait till the session is closed
+session.wait()
